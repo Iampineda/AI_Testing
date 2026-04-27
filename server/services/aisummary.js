@@ -10,7 +10,7 @@ async function generateSummary(reportText) {
     }
 
     const response = await client.responses.create({
-        model: "gpt-5.2-mini",
+        model: "gpt-5.5",
         input: `
 Summarize this media monitoring report.
 
