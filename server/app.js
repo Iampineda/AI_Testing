@@ -5,6 +5,8 @@ require("dotenv").config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
+const { generateSummary }  = require('./services/aisummary')
+
 // -- Middleware -- //
 app.use(cors())
 app.use(express.json())
@@ -15,8 +17,26 @@ app.get('/', (req, res) => {
 })
 
 // -- AI Route -- //
-app.post('/summarize', (req, res) => {
-    res.json({ message: "Summary Route Working"})
+app.post('/summary', async (req, res) => {
+   
+    try {
+        const { reportText} = req.body
+        const summary = await generateSummary(reportText)
+
+        res.json({
+            success: true,
+            summary
+        })
+    }
+    catch(error) {
+        console.error(error)
+
+        res.status(500).json({
+            success: false,
+            message: "Summary Generation Failed"
+        })    
+    }
+
 })
 
 // -- Start Server -- // 
