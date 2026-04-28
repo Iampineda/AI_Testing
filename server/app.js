@@ -23,6 +23,7 @@ app.post('/summary', async (req, res) => {
         const { reportText} = req.body
         console.log(reportText)
         const summary = await generateSummary(reportText)
+        console.log(summary)
         res.json({
             success: true,
             summary
