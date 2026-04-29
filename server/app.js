@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000
 const { generateSummary }  = require('./services/aisummary')
 const { fetchRssArticles } = require('./services/rssService');
 const { saveArticles, getArticles } = require('./services/articleStore');
+const { fetchNewsApiArticles } = require('./services/newsApiService');
 
 // -- Middleware -- //
 app.use(cors())
@@ -60,6 +61,30 @@ app.get('/collect/rss', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to collect RSS articles'
+        });
+    }
+});
+
+app.get('/collect/news', async (req, res) => {
+    try {
+        const query = req.query.q;
+
+        const articles = await fetchNewsApiArticles(query);
+
+        saveArticles(articles);
+
+        res.json({
+            success: true,
+            count: articles.length,
+            articles
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: 'Failed to collect News API articles'
         });
     }
 });
